@@ -1,8 +1,20 @@
-# React + Vite
+# Fullstack Blog website using Appwrite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+##  Conf - Need ?
+It's good that the configuration (conf) is kept in a separate file. Make sure that sensitive information such as API keys and secrets are handled securely.
 
-Currently, two official plugins are available:
+## Authentication logic - 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Exporting an Instance of the Service Class:**
+- Exporting an instance (`authservice`) rather than the class promotes a Singleton pattern, ensuring consistent state and a single point of initialization.
+- Avoids unecessary re-initialisations
+
+**Usefulness of the Service Class in This Example:**
+- Encapsulates Appwrite logic, making code readable and maintainable.
+- Enables code reusability, facilitating a smooth transition to another BaaS provider like Firebase.
+- Simplifies testing by isolating Appwrite-related functionality.
+
+**Migrating to Another BaaS:**
+- Create a new service class for the new BaaS with the same interface.
+- Update the instance creation to use the new service class.
+- The rest of the application remains unchanged, promoting flexibility and maintainability.
