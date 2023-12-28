@@ -92,3 +92,48 @@ Contents -
       }
    }
    ```
+## Use of Forward Ref and useId() in `Input.jsx`
+**Q1) What is `useRef` hook in React?**
+
+- 1. **Mutable Reference:** `useRef` provides a mutable object with a `current` property that can be assigned any value. This allows for persisting values across renders without triggering re-renders.
+
+2. **Accessing and Modifying DOM Elements:** `useRef` is often used to obtain a reference to a DOM element. This reference can be accessed and modified without causing a re-render, making it useful for managing and interacting with specific elements in the DOM.
+
+**Q2) What is `forwardRef` in React?**
+
+-  `forwardRef` is a function in React that allows components to forward a ref to a child component. This is useful when you want a parent component to interact with a specific DOM element or React component instance in the child, without exposing its implementation details.
+
+**Q3) Why do we need `forwardRef` in React?**
+
+-  `forwardRef` is needed when you want a parent component to be able to directly access or interact with a child component's DOM element or React component instance. It enables passing the `ref` from the parent to the child without breaking encapsulation.
+
+**Q4) Basic syntax for creating `forwardRef` in a child component:**
+
+```jsx
+const MyComponent = React.forwardRef((props, ref) => {
+  // Component logic here
+  return <div ref={ref}>Component Content</div>;
+});
+```
+
+**Q5) Basic syntax for accessing the `ref` in the parent component:**
+
+```jsx
+const parentComponent = () => {
+  const childRef = React.createRef();
+
+  // ...
+
+  return <MyComponent ref={childRef} />;
+};
+```
+
+**Q6) What is `useId()` hook in React?**
+
+ `useId()` is a custom hook that generates a unique identifier. It is commonly used when creating HTML elements with associated labels to ensure that each label has a unique `for` attribute value.
+
+**Q7) Why is `useId()` used in this code? In simple terms:**
+
+ The `useId()` hook is used to generate a unique identifier for the `label` and `input` elements in the `Input` component. This ensures that the `for` attribute of the `label` matches the `id` attribute of the `input`, creating a proper association. It helps in accessibility and ensures a unique HTML structure, avoiding potential conflicts in larger applications.
+
+ 
