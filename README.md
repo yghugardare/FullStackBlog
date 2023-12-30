@@ -179,3 +179,155 @@ In simpler terms:
 - If `authentication` is not expected (false) but the user is authenticated, go to the home page.
 - No redirection is needed if the authentication status matches the expected status.
 
+## Controlled vs Uncontrolled Components - 
+Certainly! In React, the terms "controlled components" and "uncontrolled components" refer to how the component manages and responds to its state, especially the value of its input fields.
+
+
+**Example: Controlled Input**
+
+- **Controlled:**
+  - Values are managed through React state.
+  - Changes are handled by updating state.
+  - Predictable and easier to test and manage.
+
+```jsx
+import React, { useState } from 'react';
+
+function ControlledInput() {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  return (
+    <input
+      type="text"
+      value={inputValue}
+      onChange={handleChange}
+    />
+  );
+}
+```
+
+- **Uncontrolled:**
+  - Values are managed by the DOM.
+  - Changes are accessed directly from the DOM.
+  - Can be useful for integrating with non-React code or working with large forms.
+
+**Example: Uncontrolled Input**
+
+```jsx
+import React, { useRef } from 'react';
+
+function UncontrolledInput() {
+  const inputRef = useRef();
+
+  const handleButtonClick = () => {
+    // Accessing the input value directly from the DOM
+    alert(`Input Value: ${inputRef.current.value}`);
+  };
+
+  return (
+    <div>
+      <input type="text" ref={inputRef} />
+      <button onClick={handleButtonClick}>Get Value</button>
+    </div>
+  );
+}
+```
+
+## RTE.jsx details - 
+
+**Q1) What is the role of the Controller component?**
+
+- **Answer:** The `Controller` component from `react-hook-form` is responsible for integrating external controlled components, like the TinyMCE Editor in this case, into a React Hook Form. It connects the form state and validation to the external component, allowing it to work seamlessly within the form.
+
+**Q2) What is the control prop in Controller?**
+
+- **Answer:** The `control` prop in the `Controller` component represents the React Hook Form's control object. It is passed down to provide access to the form state, methods, and validation rules. It acts as a bridge between the form and the external controlled component.
+
+**Q3) Explain what is render, and what is it doing in the code?**
+
+- **Answer:** The `render` prop in the `Controller` component is a function that defines how the external controlled component (`Editor` in this case) should be rendered within the form. It receives an object with a `field` property, which includes the `onChange` function. The `render` prop allows customization of how the external component is integrated into the form, ensuring proper interaction with the form state.
+
+**Q4) Why does render have field: onChange, and why is it being passed to onEditorChange?**
+
+- **Answer:** The `field: onChange` in the `render` prop is part of the structure provided by the `Controller` component. It includes the `onChange` function, which is crucial for updating the form state when the content of the TinyMCE Editor changes. The `onEditorChange` prop of the `Editor` component expects a function that handles changes in the editor content. By passing `onChange` from the `field` object, it ensures that changes in the TinyMCE Editor are properly reflected in the form state managed by React Hook Form.
+
+**Q5) Explain the entire purpose of RTE.jsx component**
+
+- **Answer:** The `RTE.jsx` component serves as a wrapper for integrating the TinyMCE Editor into a form built with React Hook Form. It abstracts the complexity of connecting the external controlled component (`Editor`) with the form state and validation. The component takes props like `name`, `control`, `label`, and `defaultValue`, and renders a labeled TinyMCE Editor within a `Controller` component. This enables easy usage of the TinyMCE Editor in forms while leveraging the features of React Hook Form for state management and validation.
+
+## All about `PostForm.jsx` - 
+**Q1) What is the useCallback hook in React?**
+
+- **Answer:** `useCallback` is a React hook used to memoize a function, ensuring that the function instance remains the same between renders unless its dependencies change. It is often used to optimize performance by preventing unnecessary re-creation of functions.
+
+**Q2) Why did we use useCallback for the `slugTransform` function?**
+
+- **Answer:** The `slugTransform` function is used as a dependency in the `useEffect` hook, and `useEffect` relies on stable references to its dependencies. By using `useCallback`, we ensure that the `slugTransform` function maintains the same reference unless its dependencies change, preventing unnecessary re-execution of the `useEffect` hook.
+
+**Q3) What would have happened if we did not use useCallback?**
+
+- **Answer:** Without `useCallback`, the `slugTransform` function would be re-created on every render, leading to a new reference. This could potentially cause the `useEffect` hook to run more frequently than necessary, impacting performance.
+
+**Q5) **What is `shouldValidate:true` in the `setValues()`? **
+-  if there is a validation rule stating that the slug field must be filled out, setting shouldValidate: true ensures that this validation rule is checked and potentially displays an error message if the slug field is empty after the update.
+=> shouldValidate: true is used to trigger immediate validation for the field being updated, ensuring that validation rules associated with that field are applied and any relevant UI updates are triggered accordingly.
+
+**Q4a) In the `useEffect` hook, we assigned a variable named `subscription` to the `watch` method, and then we returned a callback with `.unsubscribe()` method. What exactly did we do? **
+
+**Q4b) Why did we use `subscription`?**
+
+**Q4c) How does it help, and what exactly is `.unsubscribe()`? Why did we use a callback to provide reference?**
+
+- **Answer:** In this code, `subscription` is an object returned by the `watch` method. The `watch` method is used to observe changes in form values. `subscription.unsubscribe()` is a method to stop observing changes.
+
+  - **Why we used it:**
+    - We used `subscription` to store a reference to the subscription object, allowing us to unsubscribe later when the component unmounts.
+
+  - **How it helps:**
+    - When a component unmounts, it's essential to clean up subscriptions to avoid potential memory leaks. By unsubscribing in the cleanup function returned by `useEffect`, we ensure that the subscription is terminated when the component is no longer in use.
+
+  - **What is `.unsubscribe()`:**
+    - The `.unsubscribe()` method is specific to the subscription object returned by certain observables or event listeners. It is used to stop listening or observing.
+
+  - **Why we used a callback to provide reference:**
+    - The callback returned by `useEffect` is a cleanup function that runs when the component is unmounted. By returning a function that calls `subscription.unsubscribe()`, we ensure that the unsubscription happens at the appropriate time during the component's lifecycle. This is a common pattern for cleanup operations in React.
+**Summary for  `PostForm.jsx` ?**
+**PostForm.jsx:**
+
+The `PostForm` component is a form used for creating or updating blog posts. It utilizes React Hook Form for form management.
+
+- **Inputs:**
+  - The form includes inputs for the post title, slug (automatically generated from the title), content (Rich Text Editor), featured image (file upload), and status (active or inactive).
+
+- **Default Values:**
+  - Default values are set based on whether the component receives a `post` prop. If a `post` is provided, it populates the form with post details for editing; otherwise, the form is initialized for creating a new post.
+
+- **Form Handling:**
+  - The form is handled by React Hook Form, providing features like input validation, default values, and form submission.
+
+- **File Upload:**
+  - If updating a post, it checks for changes in the featured image. If a new image is provided, it uploads and replaces the old one.
+
+- **Navigation:**
+  - After form submission, it navigates to the updated or newly created post.
+
+- **Slug Transformation:**
+  - The `slugTransform` function transforms the title into a URL-friendly slug. It's used with `useCallback` for performance optimization.
+
+- **Watch and Update:**
+  - It watches changes in the title input and updates the slug in real-time.
+
+- **Cleanup:**
+  - Utilizes a subscription to watch for changes and unsubscribes when the component is unmounted, preventing memory leaks.
+
+- **Redux and Navigation:**
+  - Uses Redux for user data and React Router's `useNavigate` for page navigation.
+
+In summary, `PostForm` is a dynamic form component that adapts to both post creation and editing scenarios, integrating various form elements with React Hook Form and managing file uploads. It ensures an efficient user experience when creating or updating blog posts.
+
+
+
