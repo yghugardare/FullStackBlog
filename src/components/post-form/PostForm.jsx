@@ -24,35 +24,41 @@ function PostForm({ post }) {
  
   const submit = async (data) => {
     if (post) {
+      // extract file
       const file = data.image[0]
         ? await appwriteService.uploadFile(data.image[0])
         : null;
 
       if (file) {
+        // delete prev file
         appwriteService.deleteFile(post.featuredImage);
       }
-
-      const dbPost = await appwriteService.updatePost(post.$id, {
+      // update existing post
+      const dbPost = await appwriteService.updatePost(post?.$id, {
         ...data,
-        featuredImage: file ? file.$id : undefined,
+        featuredImage: file ? file?.$id : undefined,
       });
-
+      // if updated navigate there
       if (dbPost) {
-        navigate(`/post/${dbPost.$id}`);
+        navigate(`/post/${dbPost?.$id}`);
       }
     } else {
-      const file = await appwriteService.uploadFile(data.image[0]);
+      // create post logic
+      // upload file
+      const file = await appwriteService.uploadFile(data?.image[0]);
 
       if (file) {
+        // if i have file create file id
         const fileId = file.$id;
         data.featuredImage = fileId;
+        // create new post with userId
         const dbPost = await appwriteService.createPost({
           ...data,
           userId: userData.$id,
         });
-
+        // if post is created then navigate me to the post
         if (dbPost) {
-          navigate(`/post/${dbPost.$id}`);
+          navigate(`/post/${dbPost?.$id}`);
         }
       }
     }
