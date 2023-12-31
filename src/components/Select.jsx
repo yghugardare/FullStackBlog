@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useId } from 'react'
+
 
 function Select({
     options,
     label,
     className = "",
-    ...attributesToProps
+    ...props
 },ref) {
     const id = useId();
   return (

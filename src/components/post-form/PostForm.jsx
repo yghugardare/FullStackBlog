@@ -21,45 +21,43 @@ function PostForm({ post }) {
     });
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
+ 
   const submit = async (data) => {
     if (post) {
-      //extract file
       const file = data.image[0]
         ? await appwriteService.uploadFile(data.image[0])
         : null;
+
       if (file) {
-        // delete the prev file
         appwriteService.deleteFile(post.featuredImage);
       }
-      // update the existing post
+
       const dbPost = await appwriteService.updatePost(post.$id, {
         ...data,
         featuredImage: file ? file.$id : undefined,
       });
-      // if updated navigate there
+
       if (dbPost) {
         navigate(`/post/${dbPost.$id}`);
-      } else {
-        // create post logic
-        // upload the file
-        const file = await appwriteService.uploadFile(data.image[0]);
-        if (file) {
-          // if i have file, create fileId
-          const fileId = file.$id;
-          data.featuredImage = fileId;
-          // then create new post with user Id
-          const dbPost = await appwriteService.createPost({
-            ...data,
-            userId: userData.$id,
-          });
-          // if post is created then navigate me to the post
-          if (dbPost) {
-            navigate(`/post.${dbPost.$id}`);
-          }
+      }
+    } else {
+      const file = await appwriteService.uploadFile(data.image[0]);
+
+      if (file) {
+        const fileId = file.$id;
+        data.featuredImage = fileId;
+        const dbPost = await appwriteService.createPost({
+          ...data,
+          userId: userData.$id,
+        });
+
+        if (dbPost) {
+          navigate(`/post/${dbPost.$id}`);
         }
       }
     }
   };
+
   // useCallback to optimize
   const slugTransform = useCallback((value) => {
     if (value && typeof value === "string") {

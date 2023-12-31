@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import {Container,PostForm} from '../components/index'
 import { useNavigate, useParams } from 'react-router-dom';
 import appwriteService from '../appwrite/config';
