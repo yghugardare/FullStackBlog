@@ -34,9 +34,9 @@ function PostForm({ post }) {
         appwriteService.deleteFile(post.featuredImage);
       }
       // update existing post
-      const dbPost = await appwriteService.updatePost(post?.$id, {
+      const dbPost = await appwriteService.updatePost(post.$id, {
         ...data,
-        featuredImage: file ? file?.$id : undefined,
+        featuredImage: file ? file.$id : undefined,
       });
       // if updated navigate there
       if (dbPost) {
@@ -45,7 +45,7 @@ function PostForm({ post }) {
     } else {
       // create post logic
       // upload file
-      const file = await appwriteService.uploadFile(data?.image[0]);
+      const file = await appwriteService.uploadFile(data.image[0]);
 
       if (file) {
         // if i have file create file id
@@ -54,11 +54,11 @@ function PostForm({ post }) {
         // create new post with userId
         const dbPost = await appwriteService.createPost({
           ...data,
-          userId: userData.$id,
+          userId: userData?.$id,
         });
         // if post is created then navigate me to the post
         if (dbPost) {
-          navigate(`/post/${dbPost?.$id}`);
+          navigate(`/post/${dbPost.$id}`);
         }
       }
     }
@@ -132,9 +132,10 @@ function PostForm({ post }) {
         />
         {/* if post is there then only give file preview */}
 
-        {post && (
+        {post && post.featuredImage  &&(
           <div className="w-full mb-4">
             <img
+         
               src={appwriteService.getFilePreview(post.featuredImage)}
               alt={post.title}
               className="rounded-lg"

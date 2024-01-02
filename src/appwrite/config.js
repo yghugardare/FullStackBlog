@@ -116,8 +116,8 @@ export class Service {
   // get file preview
   // it is not a promise in documentation
   // of appwrite, so dont use async await
-    getFilePreview(fileId){
-        return this.bucket.getFilePreview(
+     getFilePreview(fileId){
+        return  this.bucket.getFilePreview(
             conf.appwriteBucketId,
             fileId
         )
