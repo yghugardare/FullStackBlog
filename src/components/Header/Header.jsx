@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom';
 import {Container,Logo,LogoutButton} from '../index'
 function Header() {
   const authStatus = useSelector((state)=>state.auth.status);
   const navigate = useNavigate();
+  const [iconClicked,setIconClicked] = useState(false);
   const navItems = [
     {
       name : 'Home',
@@ -36,18 +37,22 @@ function Header() {
     <header className='py-3 shadow bg-gray-500'>
       <Container>
         <nav className="flex">
+          
           <div className="mr-4">
             <Link to='/'>
               <Logo width='70px'/>
             </Link>
           </div>
-          <ul className="flex ml-auto">
+          <div
+          onClick={()=>setIconClicked(iconClicked=>!iconClicked)}
+          className='ml-auto lg:hidden'>{iconClicked?<span>&#9587;</span>:<span>&#9776;</span>}</div>
+          <ul className={`md:flex md:bg-transparent bg-white/50 rounded-xl ml-auto block md:static absolute right-0 top-10 ${iconClicked?"inline-block":"hidden"}`}>
           {navItems.map((item) => 
             item.active ? (
               <li key={item.name}>
                 <button
                 onClick={() => navigate(item.slug)}
-                className='inline-bock px-6 py-2 duration-200 hover:bg-blue-100 rounded-full'
+                className='inline-bock px-6 py-2 duration-200 md:hover:bg-blue-100  rounded-full'
                 >{item.name}</button>
               </li>
             ) : null

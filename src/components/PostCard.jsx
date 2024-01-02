@@ -7,14 +7,14 @@ function PostCard({$id,title,featuredImage}) {
   let img =  appwriteService.getFilePreview(featuredImage)
   return (
     <Link to={`/post/${$id}`}>
-        <div className="w-full bg-gray-100 rounded-xl p-4">
+        <div className="w-full bg-blue-500 rounded-xl text-wrap p-4">
             <div>
                 <img 
                 className='rounded-xl'
                 src={img} alt={title} />
 
             </div>
-            <h2 className="text-xl font-bold">
+            <h2 className="lg:text-xl text-[10px]  font-bold">
                 {title}
             </h2>
         </div>
